@@ -84,6 +84,10 @@ Database credentials are read from `.env`; do not commit real secrets.
 docker-compose.yml   GLPI and MariaDB service definitions
 .env.example         Local environment variable template
 docs/evidence-checklist.md  Screenshots and proof checklist
+docs/operations-runbook.md  Backup, restore, and smoke-test notes
+scripts/backup-db.sh        MariaDB logical backup helper
+scripts/restore-db.sh       MariaDB restore helper
+scripts/smoke-test.sh       Container and HTTP smoke test
 README.md            Project scope, setup, and evidence notes
 ```
 
@@ -92,16 +96,17 @@ README.md            Project scope, setup, and evidence notes
 - Docker Compose runtime definition in this repo.
 - Companion article documenting the manual implementation and troubleshooting path.
 - Article examples include sample tickets, role setup, asset tracking, locations, SLA/reporting exploration, and GLPI security hardening notes.
+- Operations runbook with smoke-test, backup, and restore commands.
 
 ## Evidence Still Needed In This Repo
 
 - `docs/screenshots/` with GLPI dashboard, sample ticket, asset inventory, and SLA/reporting screenshots.
 - Redacted `.env` setup notes.
 - Short smoke-test command output showing containers running.
-- Backup and restore runbook for MariaDB.
+- Backup and restore command output for MariaDB.
 - Upgrade notes for GLPI image/version changes.
 
-Use [docs/evidence-checklist.md](docs/evidence-checklist.md) before presenting the project in interviews.
+Use [docs/evidence-checklist.md](docs/evidence-checklist.md) and [docs/operations-runbook.md](docs/operations-runbook.md) before presenting the project in interviews.
 
 ## Known Limitations
 
@@ -113,6 +118,5 @@ Use [docs/evidence-checklist.md](docs/evidence-checklist.md) before presenting t
 ## Next Improvements
 
 - Pin the GLPI image version.
-- Add a backup/restore script for the MariaDB volume.
 - Add screenshots and a short evidence checklist under `docs/`.
 - Add a production-hardening section covering TLS, mail collectors, scheduled backups, and access control.
