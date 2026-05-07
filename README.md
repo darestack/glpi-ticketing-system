@@ -1,103 +1,118 @@
-# glpi-ticketing-system
+# GLPI Ticketing System Lab
 
-> Self-hosted IT helpdesk using GLPI on Docker. Configured with ticket categories,
-> asset inventory, SLA rules, and user roles — mirrors a real internal IT support environment.
+Docker Compose lab for running a self-hosted GLPI helpdesk with the official GLPI image, MariaDB, persistent storage, and an internal-only database network.
 
-📖 **Full implementation write-up:** [From Zero to Helpdesk Hero: Building an Enterprise IT Support System with GLPI](https://dev.to/darestack/from-zero-to-helpdesk-hero-building-an-enterprise-it-support-system-with-glpi-hpe)
+> Status: IT support / systems administration portfolio lab. The repo contains the repeatable Docker setup; the companion write-up documents the manual GLPI implementation, troubleshooting, sample tickets, roles, locations, assets, and reporting workflow.
 
-> **Note:** This repo contains the Docker Compose deployment setup. The complete step-by-step guide — covering installation, asset configuration, SLA setup, user roles, and production hardening — is documented in the article above.
+## Problem Statement
 
----
+Small IT teams need a reliable way to track support requests, assign ownership, manage assets, and measure response times. This project shows how I set up GLPI as a practical ITSM/helpdesk environment and packaged the core runtime with Docker Compose for repeatable local testing.
 
-## What This Is
+## Companion Write-Up
 
-GLPI (Gestionnaire Libre de Parc Informatique) is an open-source ITSM platform used in production by thousands of organisations. This deployment demonstrates:
+Full implementation story:
 
-- Standing up a complete helpdesk from a `docker-compose up` command
-- Configuring it to mirror a real IT support operation: asset types, ticket categories, SLA policies, user roles (technician / manager / admin)
-- Persistent storage for the database and uploaded files
+[From Zero to Helpdesk Hero: Building an Enterprise IT Support System with GLPI](https://dev.to/darestack/from-zero-to-helpdesk-hero-building-an-enterprise-it-support-system-with-glpi-hpe)
 
----
+The article covers the manual setup path, including web server troubleshooting, PHP-FPM socket issues, GLPI security warnings, FakeCorp sample organization design, ticket examples, user roles, asset tracking, location-based routing, SLA tracking, and reporting.
 
-## Stack
+## Architecture
 
-| Component | Technology |
-|---|---|
-| ITSM platform | GLPI (latest) |
-| Database | MariaDB |
-| Containerisation | Docker, Docker Compose |
-| Persistent storage | Named Docker volumes |
+```text
+Browser
+  |
+  v
+GLPI container
+  |  port 8080 -> container port 80
+  |
+  v
+MariaDB container
+  |
+  v
+Docker named volume: glpi_db
 
----
+GLPI uploaded files and application data:
+Docker named volume: glpi_data
+```
+
+MariaDB is not exposed on a host port. Only the GLPI container can reach it over the Docker network.
+
+## Tech Stack
+
+- Official `glpi/glpi` Docker image
+- MariaDB 10.11
+- Docker
+- Docker Compose
+- Named Docker volumes
+
+## What This Demonstrates
+
+- Self-hosted ITSM/helpdesk runtime using Docker Compose.
+- Persistent database and GLPI application data storage.
+- Environment-based database credentials through `.env`.
+- Internal service networking with only GLPI exposed to the host.
+- Database health check before GLPI startup.
+- Practical IT support workflow design: users, roles, tickets, categories, assets, locations, SLA examples, and reporting notes.
 
 ## Quick Start
 
-**Prerequisites:** Docker and Docker Compose installed.
+Prerequisites:
+
+- Docker
+- Docker Compose
 
 ```bash
 git clone https://github.com/darestack/glpi-ticketing-system.git
 cd glpi-ticketing-system
-docker-compose up -d
+cp .env.example .env
+docker compose up -d
 ```
 
-Access GLPI at: **http://localhost:8080**
+Open GLPI:
 
-Default credentials (change immediately after first login):
-- Username: `glpi`
-- Password: `glpi`
-
-Database credentials are set in `docker-compose.yml` via environment variables.
-
----
-
-## What Was Configured
-
-### Asset Management
-- **Asset types defined**: Workstations, Servers, Network devices, Printers, Mobile devices
-- **Fields configured**: Serial number, purchase date, warranty expiry, assigned user, location
-- Assets linked to tickets so every incident is traceable to a specific piece of equipment
-
-### Ticket Categories
-- Hardware failure
-- Software / application issues
-- Access and permissions requests
-- Network connectivity
-- General IT request
-
-### SLA Policies
-- **P1 (Critical)**: Response within 1 hour, resolution within 4 hours
-- **P2 (High)**: Response within 4 hours, resolution within 1 business day
-- **P3 (Normal)**: Response within 1 business day, resolution within 3 business days
-
-### User Roles
-| Role | Permissions |
-|---|---|
-| **End user** | Submit tickets, view own ticket status |
-| **Technician** | Accept, update, close tickets; access asset inventory |
-| **Manager** | All technician permissions + SLA reporting + user management |
-| **Admin** | Full system access including configuration |
-
----
-
-## Architecture
-
-```
-Browser
-  └── GLPI container (port 8080)
-        └── MariaDB container (internal network only)
-              └── glpi_db volume (persistent)
-        └── glpi_files volume (uploaded attachments, persistent)
+```text
+http://localhost:8080
 ```
 
-The MariaDB container is not exposed on the host — only GLPI can reach it over the internal Docker network.
+Default GLPI credentials are created by the upstream image. Change them immediately after first login.
 
----
+Database credentials are read from `.env`; do not commit real secrets.
 
-## Key Files
+## Repository Files
 
+```text
+docker-compose.yml   GLPI and MariaDB service definitions
+.env.example         Local environment variable template
+docs/evidence-checklist.md  Screenshots and proof checklist
+README.md            Project scope, setup, and evidence notes
 ```
-glpi-ticketing-system/
-├── docker-compose.yml    # Service definitions, volumes, network
-├── .env.example          # Environment variable template
-└── README.md
-```
+
+## Evidence Already Available
+
+- Docker Compose runtime definition in this repo.
+- Companion article documenting the manual implementation and troubleshooting path.
+- Article examples include sample tickets, role setup, asset tracking, locations, SLA/reporting exploration, and GLPI security hardening notes.
+
+## Evidence Still Needed In This Repo
+
+- `docs/screenshots/` with GLPI dashboard, sample ticket, asset inventory, and SLA/reporting screenshots.
+- Redacted `.env` setup notes.
+- Short smoke-test command output showing containers running.
+- Backup and restore runbook for MariaDB.
+- Upgrade notes for GLPI image/version changes.
+
+Use [docs/evidence-checklist.md](docs/evidence-checklist.md) before presenting the project in interviews.
+
+## Known Limitations
+
+- This is a local lab, not a hardened production deployment.
+- The Compose file uses the official `glpi/glpi:latest` image for easy lab setup; pin a version or digest before using this outside a lab.
+- TLS, email ingestion, SSO/LDAP, backups, monitoring, and off-host storage are not configured yet.
+- GLPI business configuration is documented in the article, but not exported as reproducible configuration in this repo.
+
+## Next Improvements
+
+- Pin the GLPI image version.
+- Add a backup/restore script for the MariaDB volume.
+- Add screenshots and a short evidence checklist under `docs/`.
+- Add a production-hardening section covering TLS, mail collectors, scheduled backups, and access control.

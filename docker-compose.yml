@@ -1,35 +1,44 @@
-version: "3.8"
-
 services:
   glpi:
-    image: diouxx/glpi:latest
+    image: glpi/glpi:latest
     container_name: glpi
     environment:
-      - TIMEZONE=Africa/Lagos
+      GLPI_DB_HOST: db
+      GLPI_DB_PORT: 3306
+      GLPI_DB_NAME: ${GLPI_DB_NAME}
+      GLPI_DB_USER: ${GLPI_DB_USER}
+      GLPI_DB_PASSWORD: ${GLPI_DB_PASSWORD}
+      GLPI_CRONTAB_ENABLED: ${GLPI_CRONTAB_ENABLED:-1}
     ports:
       - "8080:80"
     volumes:
-      - glpi_files:/var/www/html/glpi
+      - glpi_data:/var/glpi
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   db:
     image: mariadb:10.11
     container_name: glpi_db
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-glpi}
-      - MYSQL_USER=${MYSQL_USER:-glpi}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${GLPI_DB_NAME}
+      MARIADB_USER: ${GLPI_DB_USER}
+      MARIADB_PASSWORD: ${GLPI_DB_PASSWORD}
     volumes:
       - glpi_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root -p$${MARIADB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
     # MariaDB is NOT exposed on a host port.
     # Only the glpi container can reach it over the internal Docker network.
 
 volumes:
-  glpi_files:
+  glpi_data:
   glpi_db:
 
 networks:
