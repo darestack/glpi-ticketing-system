@@ -94,15 +94,18 @@ README.md            Project scope, setup, and evidence notes
 ## Evidence Already Available
 
 - Docker Compose runtime definition in this repo.
+- Local smoke evidence captured on May 9, 2026:
+  - [GLPI login screen](https://github.com/darestack/darestack/blob/main/docs/evidence/glpi-login.png)
+  - [GLPI dashboard](https://github.com/darestack/darestack/blob/main/docs/evidence/glpi-dashboard.png)
+  - [Smoke run note](https://github.com/darestack/darestack/blob/main/docs/evidence/glpi-smoke-2026-05-09.md)
 - Companion article documenting the manual implementation and troubleshooting path.
 - Article examples include sample tickets, role setup, asset tracking, locations, SLA/reporting exploration, and GLPI security hardening notes.
 - Operations runbook with smoke-test, backup, and restore commands.
 
 ## Evidence Still Needed In This Repo
 
-- `docs/screenshots/` with GLPI dashboard, sample ticket, asset inventory, and SLA/reporting screenshots.
+- `docs/screenshots/` with sample ticket, asset inventory, and SLA/reporting screenshots.
 - Redacted `.env` setup notes.
-- Short smoke-test command output showing containers running.
 - Backup and restore command output for MariaDB.
 - Upgrade notes for GLPI image/version changes.
 
