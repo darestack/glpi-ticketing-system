@@ -94,6 +94,13 @@ README.md            Project scope, setup, and evidence notes
 ## Evidence Already Available
 
 - Docker Compose runtime definition in this repo.
+- Local GLPI workflow screenshots captured on May 10, 2026:
+  - [Ticket list with sample incident](docs/screenshots/glpi-ticket-list.png)
+  - [Sample incident ticket](docs/screenshots/glpi-sample-ticket.png)
+  - [Computer asset inventory](docs/screenshots/glpi-computer-inventory.png)
+  - [Sample computer asset](docs/screenshots/glpi-sample-asset.png)
+  - [Sample service level](docs/screenshots/glpi-sample-service-level.png)
+  - [Ticket statistics dashboard](docs/screenshots/glpi-statistics.png)
 - Local smoke evidence captured on May 9, 2026:
   - [GLPI login screen](https://github.com/darestack/darestack/blob/main/docs/evidence/glpi-login.png)
   - [GLPI dashboard](https://github.com/darestack/darestack/blob/main/docs/evidence/glpi-dashboard.png)
@@ -104,10 +111,10 @@ README.md            Project scope, setup, and evidence notes
 
 ## Evidence Still Needed In This Repo
 
-- `docs/screenshots/` with sample ticket, asset inventory, and SLA/reporting screenshots.
 - Redacted `.env` setup notes.
 - Backup and restore command output for MariaDB.
 - Upgrade notes for GLPI image/version changes.
+- Optional role/user screenshots if the lab is rebuilt with a fuller fake-company dataset.
 
 Use [docs/evidence-checklist.md](docs/evidence-checklist.md) and [docs/operations-runbook.md](docs/operations-runbook.md) before presenting the project in interviews.
 
@@ -121,5 +128,5 @@ Use [docs/evidence-checklist.md](docs/evidence-checklist.md) and [docs/operation
 ## Next Improvements
 
 - Pin the GLPI image version.
-- Add screenshots and a short evidence checklist under `docs/`.
+- Add backup and restore evidence under `docs/`.
 - Add a production-hardening section covering TLS, mail collectors, scheduled backups, and access control.
